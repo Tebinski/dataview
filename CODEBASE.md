@@ -8,8 +8,9 @@ conventions to follow when extending the code.
 
 A small client-side **React + TypeScript** single-page app, built with **Vite**.
 It loads a tab-separated `.data` file containing **several stacked tables**, lists
-them in a sidebar, and plots the selected table as **lines grouped by the 2nd
-column** using **Chart.js**.
+them in a sidebar, and plots the selected table as either a **grouped line chart**
+or a **heatmap** (user's choice) using **Chart.js**, with pickers that map each
+column to a visual channel.
 
 There is no backend, no router, and no global state library — everything runs in
 the browser and state lives in a single top-level component.
@@ -38,14 +39,14 @@ src/
   main.tsx               ReactDOM root; renders <App> in StrictMode
   App.tsx                 Top-level state + layout; wires the pieces together
   types.ts                DataTable interface (the shared data shape)
-  index.css               All styles (single stylesheet, ~104 lines)
+  index.css               All styles (single stylesheet; semantic class names)
   vite-env.d.ts           Vite client type references
   lib/
     parseTables.ts        Framework-free parser for the stacked-table format
   components/
     FileLoader.tsx        "Load .data file" button + drag-and-drop
     TableList.tsx         Sidebar list of parsed tables, with filter box
-    TablePlot.tsx         Chart.js line plot, grouped by the 2nd column
+    TablePlot.tsx         Line / heatmap chart with plot-type + column pickers
 ```
 
 ## Data model
@@ -136,6 +137,12 @@ Chart.js components are explicitly registered at module load (`CategoryScale`,
 `MatrixController`, `MatrixElement`) — add any new chart element to that
 `ChartJS.register(...)` call or it will fail at runtime.
 
+**Gotcha — scriptable options must tolerate `undefined` `raw`.** Chart.js invokes
+scriptable callbacks (heatmap `backgroundColor`, tooltip `label`, etc.) once with a
+*dataset-level* context where `ctx.raw` is `undefined`, before the per-cell calls.
+Always guard `ctx.raw` (and `ctx.chart.chartArea`, which is undefined pre-layout);
+dereferencing them unconditionally throws and unmounts the whole React tree.
+
 ## Build, run, deploy
 
 ```bash
@@ -171,5 +178,4 @@ npm run preview    # serve the production build locally
 - `dev-out.log` / `dev-err.log` and `file.data` / `file.data.bak` in the repo root
   are local scratch/output artifacts, not part of the app.
 - `dist/` and `node_modules/` are git-ignored (see [.gitignore](.gitignore)).
-- On a case-insensitive filesystem (Windows/macOS default) `CODEBASE.md` and
-  `codebase.md` resolve to **this same file**.
+
