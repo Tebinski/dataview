@@ -21,7 +21,7 @@ the browser and state lives in a single top-level component.
 | UI framework   | React 18 (`react`, `react-dom`)         |
 | Language       | TypeScript 5 (strict mode)              |
 | Build / dev    | Vite 5 + `@vitejs/plugin-react`         |
-| Charting       | `chart.js` 4 + `react-chartjs-2` 5      |
+| Charting       | `chart.js` 4 + `react-chartjs-2` 5 + `chartjs-chart-matrix` (heatmap) |
 | Deployment     | GitHub Pages via GitHub Actions         |
 
 ## Layout
@@ -109,19 +109,32 @@ Parsing rules, implemented in [parseTables.ts](src/lib/parseTables.ts):
 
 ## Plotting convention
 
-[TablePlot.tsx](src/components/TablePlot.tsx) maps columns to the chart like so:
+[TablePlot.tsx](src/components/TablePlot.tsx) offers **two plot types**, chosen
+from a dropdown, and lets the user map each column to a visual channel via
+**X / Series(Y) / Value** pickers:
 
-- **x axis** = 1st column (`columns[0]`)
-- **one line per distinct value** of the 2nd column (the grouping column)
-- **y value** = last column (`columns[length-1]`)
-- Tables with **fewer than 3 columns** fall back to a single line (1st vs last).
-- Rows whose x or y is not a finite number are skipped, so one bad cell does not
-  blank the chart; if nothing is plottable, a guidance empty state is shown.
-- Colors come from a fixed 8-entry `PALETTE`, cycled by group index.
+- **Line** — x axis = X col, one line per distinct value of the Series col,
+  y = Value col. Series may be `(none)` for a single line.
+- **Heatmap** — x axis = X col, y axis = Y col, **color = Value col** (rendered
+  with the `chartjs-chart-matrix` plugin). Cells that repeat an (x, y) pair are
+  **averaged**; a gradient colorbar shows the value range.
 
-Chart.js components are explicitly registered at module load (`LinearScale`,
-`PointElement`, `LineElement`, `Tooltip`, `Legend`, `Title`) — add any new chart
-element to that `ChartJS.register(...)` call or it will fail at runtime.
+Defaults per table shape (number of *keys* = columns − 1):
+
+- **3-column (2 keys)** → opens as a **line** (X col 0, Series col 1, Value last).
+- **4+ column (3+ keys)** → opens as a **heatmap**, since a dense grid reads
+  better as color than as many overlapping lines.
+
+Channel choices reset to these defaults whenever the selected table changes
+(a `useEffect` keyed on `table`). Rows whose x / y / value is not a finite number
+are skipped, so one bad cell does not blank the chart; if nothing is plottable, a
+guidance empty state is shown. Line colors come from a fixed 8-entry `PALETTE`;
+heatmap colors come from a 5-stop sequential scale (`STOPS`, blue→red).
+
+Chart.js components are explicitly registered at module load (`CategoryScale`,
+`LinearScale`, `PointElement`, `LineElement`, `Tooltip`, `Legend`, `Title`,
+`MatrixController`, `MatrixElement`) — add any new chart element to that
+`ChartJS.register(...)` call or it will fail at runtime.
 
 ## Build, run, deploy
 
