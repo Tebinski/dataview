@@ -1,0 +1,104 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  color: #1f2937;
+  background: #f8fafc;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; }
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid #e2e8f0;
+  background: #fff;
+}
+header h1 { font-size: 1.1rem; margin: 0; }
+.filename { color: #64748b; font-size: 0.9rem; }
+
+.file-loader { display: flex; align-items: center; gap: 0.5rem; }
+.file-loader .hint { color: #94a3b8; font-size: 0.85rem; }
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  border-radius: 6px;
+  padding: 0.4rem 0.75rem;
+}
+button:hover { background: #f1f5f9; }
+
+.body { flex: 1; display: flex; min-height: 0; }
+
+aside {
+  width: 260px;
+  min-width: 180px;
+  max-width: 60vw;
+  border-right: 1px solid #e2e8f0;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  /* Drag the right edge to widen the list when you have many tables. */
+  resize: horizontal;
+  overflow: hidden;
+}
+
+/* Filter box stays pinned; only the list below it scrolls. */
+.table-list-wrap {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+}
+.table-filter {
+  margin: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  font: inherit;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+}
+
+.table-list {
+  list-style: none;
+  margin: 0;
+  padding: 0 0.5rem 0.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+.no-match { color: #94a3b8; font-size: 0.85rem; padding: 0.5rem; }
+.table-list li { margin-bottom: 0.25rem; }
+.table-list button {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  border: 1px solid transparent;
+}
+.table-list button.active {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+.table-name { font-weight: 600; }
+.table-meta { color: #94a3b8; font-size: 0.78rem; }
+
+main { flex: 1; padding: 1rem; min-width: 0; }
+.plot { height: 100%; min-height: 400px; }
+.empty { color: #94a3b8; }
+.plot-empty { color: #475569; max-width: 36rem; }
+.plot-empty .hint { color: #94a3b8; font-size: 0.9rem; }
+.plot-empty code {
+  background: #f1f5f9;
+  padding: 0.05rem 0.3rem;
+  border-radius: 4px;
+}

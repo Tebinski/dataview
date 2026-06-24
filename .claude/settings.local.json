@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(npm install 2>&1)",
+      "PowerShell($p = Start-Process npm -ArgumentList 'run','dev' -NoNewWindow -PassThru -RedirectStandardOutput dev-out.log -RedirectStandardError dev-err.log; Start-Sleep -Seconds 6; Get-Content dev-out.log; \"---ERR---\"; Get-Content dev-err.log; Stop-Process -Id $p.Id -Force 2>$null)"
+    ]
+  }
+}

@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/types.ts","./src/vite-env.d.ts","./src/components/fileloader.tsx","./src/components/tablelist.tsx","./src/components/tableplot.tsx","./src/lib/parsetables.ts"],"version":"5.9.3"}
